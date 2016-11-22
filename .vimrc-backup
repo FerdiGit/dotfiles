@@ -71,8 +71,8 @@ autocmd vimenter * NERDTree
 
 let g:indentLine_color_term=239
 
-" Disable stupid backup and swap files - they trigger too many events
-" for file system watchers
+" Disable stupid backup and swap files - they trigger too many events for file
+" system watchers
 set nobackup
 set nowritebackup
 set noswapfile
@@ -208,4 +208,3 @@ colorscheme monokai
 if has("autocmd")
   autocmd bufwritepost .vimrc source $MYVIMRC
 endif
-

@@ -1,38 +1,125 @@
-"""""""""""""""""""""
-"                   "
-"                   "
-"   MY VIMRC FILE   "
-"                   "
-"                   "
-"""""""""""""""""""""
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                                                                             "
+"                                MY VIMRC FILE                                "
+"                                                                             "
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                               General Settings                              "
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-set nocompatible              " be iMproved, required
+set nocompatible 						"Required
+filetype off							"Required
+syntax on
 set encoding=utf-8
-set t_Co=256
 
-"Use python 2.7 for install, this helps with compatibility issues
+" Remap <leader> key
+let mapleader=','
+
+" Line numbers
+set number
+set relativenumber
+set colorcolumn=80
+set statusline=%F
+set cursorline
+set showmatch
+set nowrap
+
+" Disable backup files
+set nobackup
+set nowritebackup
+set noswapfile
+set showcmd " Enable folding
+set foldmethod=indent
+set foldlevel=99
+
+" Buffer split settings
+set splitbelow
+set splitright
+
+" Make python code look pretty
+let python_highlight_all=1
+
+" Show the docstring for folded code
+let g:SimpylFold_docstring_preview=1
+
+" Close auto-complete window when done
+let g:ycm_autoclose_preview_window_after_completion=1
+
+" Jinja2 Syntax Highlighting
+au BufNewFile,BufRead *.html,*.htm,*.shtml,*.stm set ft=jinja
+
+" PEP8 indentation
+au BufNewFile,BufRead *.py,.c,.cpp
+	\ set tabstop=4 |
+	\ set softtabstop=4 |
+	\ set shiftwidth=4 |
+	\ set textwidth=79 |
+	\ set expandtab |
+	\ set autoindent |
+	\ set fileformat=unix |
+
+au BufNewFile,BufRead *
+    \ set tabstop=4 |
+    \ set autoindent |
+	\ set expandtab |
+
+" Indentation for fullstack
+au BufNewFile,BufRead *.js,*.html,*.css,*.scss
+	\ set tabstop=2 |
+	\ set softtabstop=2 |
+	\ set shiftwidth=2 |
+	\ set expandtab
+
+let g:indentLine_color_term=239
+let g:kolor_italic=1
+let g:kolor_bold=1
+let g:kolor_underlined=0
+let g:kolor_alternative_matchparen=0
+
+
+" Javascript syntax highlighting
+let javascript_enable_domhtmlcss=0
+let b:javascript_fold=1
+let javascript_ignore_javaScriptdoc=0
+
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                         Nerdtree Settings			                          "
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" NERDTree auto startup
+" autocmd vimenter * NERDTree
+
+" move nerdtree to the right
+" let g:NERDTreeWinPos = "right"
+
+" Hide Pycache files from NERDTree
+let NERDTreeIgnore = ['\.pyc$', '__pychache__']
+
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                        Trailing Whitespace Settings                         "
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+fun! TrimWhitespace()
+	let l:save_cursor = getpos('.')
+	%s/\s\+$//e
+	call setpos('.', l:save_cursor)
+endfun
+
+command! TrimWhitespace call TrimWhitespace()
+
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                             Powerline Settings                              "
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" Use python 2.7 for install, this helps with compatibility issues
 set rtp+=$HOME/.local/lib/python2.7/site-packages/powerline/bindings/vim/
 
-"general settings
-set tabstop=3
-set softtabstop=3
-set shiftwidth=3
-set linespace=3
-set autoindent
-set number
-set showcmd
-set cursorline
-set wildmenu
-set showmatch
-set foldenable
-set ruler
-set noswapfile
-set nobackup		"Those pesky backup and
-set nowritebackup	"temp files grrrr
-set statusline=%F
-set list lcs=tab:\|\ ,eol:¬
-
-"Powerline Settings
 set laststatus=2
 if !exists('g:airline_symbols')
 	    let g:airline_symbols = {}
@@ -62,38 +149,18 @@ let g:airline_detect_paset=1
 let g:airline_detect_crypt=1
 let g:airline_detect_iminsert=0
 
-let g:airline_theme_patch_func = 'AirlineThemePatch'
+" powerline startup
+python from powerline.vim import setup as powerline_setup
+python powerline_setup()
+python del powerline_setup
 
-"Relative line numbers function
-function! NumberToggle()
-	if(&relativenumber == 1)
-		set number
-	else
-		set relativenumber
-	endif
-endfunc
 
-"Badwolf theme colour support
-function! AirlineThemePatch(palette)
-	if g:airline_theme == 'badwolf'
-		for colors in values(a:palette.inactive)
-			let colors[3] = 245
-		endfor
-	endif
-endfunction
 
-filetype plugin indent on
-filetype indent on
-syntax on
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                               Vundle Settings                               "
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-"remaps
-map <C-n> :NERDTreeToggle<CR>
-nmap <leader>l :set list!<CR>
-nnoremap <C-m> :call NumberToggle()<cr>
-let mapleader = ","
-
-" start vundler
-filetype off                  " required
+" Set the runtime path to include Vundle and initailize
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 
@@ -103,44 +170,70 @@ Plugin 'gmarik/Vundle.vim'
 " Just a shitload of colour schemes
 Plugin 'flazz/vim-colorschemes'
 
-" core plugins
-Plugin 'kien/ctrlp.vim'
-Plugin 'tpope/vim-commentary'
-Plugin 'pangloss/vim-javascript'
-Plugin 'tpope/vim-markdown'
-Plugin 'groenewege/vim-less'
-Plugin 'scrooloose/syntastic'
-Plugin 'Lokaltog/vim-distinguished'
-Plugin 'mattn/emmet-vim'
-Plugin 'Valloric/MatchTagAlways'
-Plugin 'crusoexia/vim-monokai'
-Plugin 'crusoexia/vim-javascript-lib'
-Plugin 'ntpeters/vim-better-whitespace'
+" Main vundle plugins
+Plugin 'tmhedberg/SimpylFold'					" Improved Folding
+Plugin 'vim-scripts/indentpython.vim'			" Indent Python Improved
+Plugin 'scrooloose/syntastic'					" Syntax Checking/Highlighting
+Plugin 'scrooloose/nerdtree'					" It's Nerdtree
+Plugin 'nvie/vim-flake8'						" Add PEP8 Checking
+Plugin 'sickill/vim-monokai'					" Monokai
+Plugin 'Yggdroot/indentLine'					" Indent Guides
+Plugin 'lepture/vim-jinja'						" Jinja Syntax Highlighting
+" Plugin 'valloric/YouCompleteMe'
 
-" " All of your Plugins must be added before the following line
-call vundle#end()            " required
-filetype plugin indent on    " required
+call vundle#end()								" Required
+filetype plugin indent on 						" Required
 
-"powerline startup
-python from powerline.vim import setup as powerline_setup
-python powerline_setup()
-python del powerline_setup
-"Pathogen start-up
-execute pathogen#infect()
 
-"NERDTree Auto startup
-autocmd vimenter * NERDTree
-let g:NERDTreeWinPos = "right"
 
-"Javascript syntax highlighting
-let javascript_enable_domhtmlcss=0
-let b:javascript_fold=1
-let javascript_ignore_javaScriptdoc=0
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                               Remap Keybindings                             "
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-"colorscheme
+" Split navigation
+nnoremap <C-J> <C-W><C-J>
+nnoremap <C-H> <C-W><C-H>
+nnoremap <C-L> <C-W><C-L>
+nnoremap <C-K> <C-W><C-K>
+
+" Enable folding with spacebar
+nnoremap <space> za
+
+" Bind NERDTreeToggle
+noremap <C-n> :NERDTreeToggle<CR>
+
+" Bind nohl
+vnoremap <C-n> :nohl<CR>
+inoremap <C-n> :nohl<CR>
+
+" Easier moving between tabs
+map <Leader>n <esc>:tabprevious<CR>
+map <Leader>m <esc>:tabnext<CR>
+
+" Easier moving of code blocks
+" Try to go into visual mode (v), thenselect several lines of code here and
+" then press ``>`` several times.
+vnoremap < <gv " better indentation
+vnoremap > >gv " better indentation
+
+noremap <leader>w :call TrimWhitespace()<CR>
+
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                               Themes Settings                               "
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+set t_Co=256
 syntax enable
 set background=dark
-colorscheme monokai
+colorscheme kolor
+
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                     Auto source .vimrc file after write                     "
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 if has("autocmd")
   autocmd bufwritepost .vimrc source $MYVIMRC
